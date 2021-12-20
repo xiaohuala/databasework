@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title></title>
+</head>
+<body>
+<div align="center"style="margin-top: -21px;"> 
+<h1>上传附件</h1>
+<form method="post" id="fileform"  enctype="multipart/form-data">
+<input type="file" name="file" id="fileId"/>
+<input type="button" id=filesub value="提交"/>
+</form>
+<div id="upinfo"></div>
+</div>
+</body>
+<script type="text/javascript" src="webjars/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(function(){
+	$("#filesub").click(function(){
+		//var formData = new FormData('#fileform');
+		var formData = new FormData();
+		var name = $("input").val();		
+		formData.append("file",$("#fileId")[0].files[0]);
+		formData.append("name",name);
+		$.ajax({
+			url :  "/doUpload",
+			type : 'POST',
+			data : formData,
+			// 告诉jQuery不要去处理发送的数据，对data参数进行序列化 这里必须false
+			processData : false,
+			// 告诉jQuery不要去设置Content-Type请求头
+			contentType : false, //必须
+			beforeSend:function(){
+			console.log("正在进行，请稍候");
+			},
+			success: function (data) {  
+		        if (data == "a") {  
+		            //清空输入框  
+		            var obj = document.getElementById('fileId') ; 
+					obj.outerHTML=obj.outerHTML; 
+		        	$("#upinfo").append("<p>上传成功，请勿重复提交</p>");
+		        }else{
+		        	$("#upinfo").append("<p>上传失败</p>");
+		        } 
+		    },  
+			error : function(responseStr) {
+			console.log("error");
+			}
+			});
+	});
+})                   
+</script>
+</html>
